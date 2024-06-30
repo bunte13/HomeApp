@@ -1,0 +1,43 @@
+﻿@model IEnumerable<HomeApp.Models.Supplier>
+
+@{
+    ViewData["Title"] = "Suppliers Index";
+}
+
+<h1>Suppliers</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<div class="row">
+    @foreach (var supplier in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">@supplier.Name</h5>
+                        <p class="card-text"><strong>Country:</strong> @supplier.Country</p>
+                        <p class="card-text"><strong>Established:</strong> @supplier.Established.ToString("yyyy")</p>
+                        <div class="btn-group">
+                            <a asp-action="Details" asp-route-id="@supplier.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@supplier.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@supplier.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                            }
+                        </div>
+                    </div>
+                    <img src="@supplier.LogoUrl" alt="@supplier.Name Logo" class="img-fluid" style="max-height: 100px; max-width: 200px;" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

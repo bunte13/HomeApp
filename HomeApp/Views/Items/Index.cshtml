@@ -1,0 +1,154 @@
+﻿@model HomeApp.ViewModel.ItemCategoryViewModel
+
+@{
+    ViewData["Title"] = "Items Index";
+}
+
+<h1>Items</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<form class="row g-3 justify-content-center" asp-controller="Items" asp-action="Index" method="get">
+    <div class="col-lg-4 col-md-6">
+        <select asp-for="CategoryItem" asp-items="Model.Categories" class="form-control mb-3 mb-md-0">
+            <option value="">All</option>
+        </select>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <label asp-for="SearchString" class="visually-hidden">Name</label>
+        <input type="text" asp-for="SearchString" class="form-control mb-3 mb-md-0" placeholder="Name">
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <label asp-for="SupplierSearchString" class="visually-hidden">Author:</label>
+        <input type="text" asp-for="SupplierSearchString" class="form-control mb-3 mb-md-0" placeholder="Supplier">
+    </div>
+    <div class="col-md-2">
+        <button id="filterButton" type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+    <br />
+    <br />
+    <br />
+</form>
+<div class="row">
+    @foreach (var item in Model.items)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-img-wrapper">
+                    <img src="@item.PictureJPG" class="card-img-top" alt="@item.Name">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text"><strong>Supplier:</strong> @item.Supplier.Name</p>
+                    <p class="card-text"><strong>Quantity:</strong> @item.Quantity</p>
+                    <p class="card-text"><strong>Description:</strong> @item.Description</p>
+                    <p class="card-text"><strong>Dimensions:</strong> @item.Dimensions</p>
+                    <p class="card-text"><strong>Price:</strong> @item.Price $</p>
+                    <p class="card-text"><strong>Rating:</strong> 
+                   @{
+                            double sumOfRatings = 0;
+                            foreach (var temp in item.Reviews)
+                            {
+                                sumOfRatings += temp.Rating;
+                            }
+                            double averageRating = 0;
+                            if (item.Reviews.Count > 0)
+                            {
+                                averageRating = sumOfRatings / (double)item.Reviews.Count;
+                                averageRating = Math.Round(averageRating, 1);
+                            }
+                            if (averageRating == 0)
+                            {
+                                <span>No ratings yet</span>
+                            }
+                            else
+                            {
+                                <span>@averageRating</span>
+                            }
+                    
+                    }</p>
+                    <p class="card-text"><strong>Category:</strong>
+                        @foreach (var category in item.CategoryItems)
+                        {
+                            <span>@category.Category.CatgoryName</span>
+                            if (!category.Equals(item.CategoryItems.Last()))
+                            {
+                                <span>,</span>
+                            }
+                        }
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          
+                            @if (User.Identity.IsAuthenticated)
+                            {
+
+
+                                @if (User.IsInRole("Admin"))
+                                {
+
+                                    <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                    <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                }
+
+                                if (item.Quantity>0)
+                                    {
+                                    <a class="btn btn-outline-dark" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">buy</a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-outline-dark" disabled>not enough in stock</button>
+                                    }
+
+                            }
+                           
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Add smooth transition class to cards when filter button is clicked
+            $("#filterButton").click(function () {
+                $(".card").addClass("smooth-transition");
+            });
+        });
+    </script>
+}
+
+<style>
+    .card {
+       
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        background-color: #D3E4E8;
+    }
+    .card-img-top {
+        width: 100%;
+        height: 400px;
+        max-height: 400px; 
+        object-fit: cover; 
+    }
+
+    .card:hover {
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        transform: scale(1.04);
+    }
+    .card.smooth-transition {
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+   
+</style>

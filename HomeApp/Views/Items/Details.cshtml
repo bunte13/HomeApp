@@ -1,0 +1,182 @@
+﻿@model HomeApp.ViewModel.ItemDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Item.Name;
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Items" asp-action="Index">Items</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Item.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.Item.PictureJPG))
+            {
+                <img src="@Model.Item.PictureJPG" class="img-fluid" alt="@Model.Item.Name" />
+            }
+            else
+            {
+                <div class="no-image">No image available</div>
+            }
+        </div>
+        <div class="col-md-6">
+            <h1>@Model.Item.Name</h1>
+            <h1>@Model.Item.Price $</h1>
+
+            <ul class="list-unstyled">
+                <li>
+                    <strong><h3>Description</h3></strong>
+                    <h5>@Html.DisplayFor(model => model.Item.Description)</h5>
+                </li>
+                <li>
+                    <strong><h3>Dimensions</h3></strong>
+                    <h5>@Html.DisplayFor(model => model.Item.Dimensions)</h5>
+                </li>
+                <li>
+                    <strong><h3>Supplier</h3></strong>
+                    <h5>@Html.DisplayFor(model => model.Item.Supplier.Name)</h5>
+                </li>
+                <li>
+                    <h3>Average Rating:</h3>
+                    @{
+                        double sumOfRatings = 0;
+                        foreach (var review in Model.Item.Reviews)
+                        {
+                            sumOfRatings += review.Rating;
+                        }
+                        double averageRating = 0;
+                        if (Model.Item.Reviews.Count > 0)
+                        {
+                            averageRating = sumOfRatings / (double)Model.Item.Reviews.Count;
+                            averageRating = Math.Round(averageRating, 1);
+                        }
+                    }
+                    @if (averageRating == 0)
+                    {
+                        <span>No ratings yet</span>
+                    }
+                    else
+                    {
+                        <span>@averageRating</span>
+                    }
+                </li>
+                <li>
+                    <h3>Genres</h3>
+                    <p>
+                        @foreach (var genre in Model.Item.CategoryItems)
+                        {
+                            <span>@genre.Category.CatgoryName</span>
+                            @if (!genre.Equals(Model.Item.CategoryItems.Last()))
+                            {
+                                <span>, </span>
+                            }
+                        }
+                    </p>
+                </li>
+            </ul>
+
+            <div class="btn-group mt-4" role="group">
+                @if (!Model.IsOwnedByCurrentUser)
+                {
+                    <form asp-controller="UserItems" asp-action="Create" method="post">
+                        <input type="hidden" name="ItemId" value="@Model.Item.Id" />
+                        <input class="kolicina" type="number" name="quantity" value="1" min="1" max="@Model.Item.Quantity" />
+                        <button type="submit" class="btn btn-success">Add to basket</button>
+                    </form>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary" disabled>Already in basket</button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4"></div>
+    <h4 class="mt-5">Reviews</h4>
+    <hr />
+    @if (Model.Item.Reviews != null && Model.Item.Reviews.Count > 0)
+    {
+        <div class="list-group review">
+            @foreach (var review in Model.Item.Reviews)
+            {
+                <div class="list-group-item">
+                    <h5 class="mb-1">@review.AppUser</h5>
+                    <p class="mb-1">@review.Comment</p>
+                    <small>Rating: @review.Rating</small>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No reviews yet.</p>
+    }
+</div>
+
+<style>
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .img-fluid {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+        object-fit: cover;
+    }
+
+    .no-image {
+        width: 100%;
+        height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+        color: #888;
+        font-size: 1.5rem;
+    }
+
+    .list-unstyled {
+        list-style: none;
+        padding-left: 0;
+    }
+
+        .list-unstyled li {
+            margin-bottom: 0.5rem;
+        }
+
+    .btn-group {
+        display: flex;
+    }
+
+        .btn-group .btn {
+            margin-right: 0.5rem;
+        }
+
+    .review {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 1rem;
+    }
+
+        .review .list-group-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+
+            .review .list-group-item:last-child {
+                margin-bottom: 0;
+            }
+
+    .kolicina {
+        block-size: 38px;
+    }
+</style>
