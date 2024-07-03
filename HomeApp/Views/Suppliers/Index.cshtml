@@ -5,11 +5,12 @@
 }
 
 <h1>Suppliers</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
-
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
 <div class="row">
     @foreach (var supplier in Model)
     {
@@ -19,7 +20,7 @@
                     <div>
                         <h5 class="card-title">@supplier.Name</h5>
                         <p class="card-text"><strong>Country:</strong> @supplier.Country</p>
-                        <p class="card-text"><strong>Established:</strong> @supplier.Established.ToString("yyyy")</p>
+                        <p class="card-text"><strong>Established:</strong> @supplier.Established</p>
                         <div class="btn-group">
                             <a asp-action="Details" asp-route-id="@supplier.Id" class="btn btn-sm btn-outline-secondary">View</a>
                             @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))

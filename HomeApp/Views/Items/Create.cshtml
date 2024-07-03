@@ -37,10 +37,21 @@
                 <span asp-validation-for="SelectedCategories" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Item.Price" class="control-label"></label>
+                <input asp-for="Item.Price" class="form-control" />
+                <span asp-validation-for="Item.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="FrontPageFile" class="control-label">Upload Image</label>
                 <input asp-for="FrontPageFile" type="file" class="form-control" />
                 <span asp-validation-for="FrontPageFile" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Item.Quantity" class="control-label"></label>
+                <input asp-for="Item.Quantity" class="form-control" />
+                <span asp-validation-for="Item.Quantity" class="text-danger"></span>
+            </div>
+           
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

@@ -34,7 +34,7 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <div class="button-container">
+                    <div class="button-container d-flex justify-content-center align-items-center">
                         @if (User.Identity.IsAuthenticated)
                         {
                             <div>
@@ -44,9 +44,9 @@
                                 }
                                 else if (!User.IsInRole("Admin"))
                                 {
-                                    <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                    <a class="btn btn-outline-dark" asp-action="Details" asp-controller="Items" asp-route-id="@item.Item.Id">View</a>
-                                    <a asp-controller="Reviews" asp-action="Create" asp-route-id="@item.Item.Id" class="btn btn-outline-info">Add Review</a>
+                                    <a class="btn btn-outline-dark me-2" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <a class="btn btn-outline-dark me-2" asp-action="Details" asp-controller="Items" asp-route-id="@item.Item.Id">View</a>
+                                    <a asp-controller="Reviews" asp-action="Create" asp-route-id="@item.Item.Id" class="btn btn-outline-info me-2">Add Review</a>
                                 }
                             </div>
                         }

@@ -6,9 +6,18 @@
 
 <h1>Items</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+
+@if (User.IsInRole("Admin"))
+{
+
+    <span>
+        <p><a asp-action="Create" class="btn btn-primary">Create New</a> </p>
+    </span>
+    
+   
+}
+
+
 <form class="row g-3 justify-content-center" asp-controller="Items" asp-action="Index" method="get">
     <div class="col-lg-4 col-md-6">
         <select asp-for="CategoryItem" asp-items="Model.Categories" class="form-control mb-3 mb-md-0">
@@ -45,7 +54,7 @@
                     <p class="card-text"><strong>Supplier:</strong> @item.Supplier.Name</p>
                     <p class="card-text"><strong>Quantity:</strong> @item.Quantity</p>
                     <p class="card-text"><strong>Description:</strong> @item.Description</p>
-                    <p class="card-text"><strong>Dimensions:</strong> @item.Dimensions</p>
+                    <p class="card-text"><strong>Dimensions:</strong> @item.Dimensions cm</p>
                     <p class="card-text"><strong>Price:</strong> @item.Price $</p>
                     <p class="card-text"><strong>Rating:</strong> 
                    @{
@@ -80,37 +89,33 @@
                             }
                         }
                     </p>
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-center align-items-center">
                         <div class="btn-group">
-                          
                             @if (User.Identity.IsAuthenticated)
                             {
-
-
                                 @if (User.IsInRole("Admin"))
                                 {
-
-                                    <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                                    <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <a class="btn btn-outline-dark me-2" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                    <a class="btn btn-outline-dark me-2" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 }
-
-                                if (item.Quantity>0)
+                                else
+                                {
+                                    if (item.Quantity > 0)
                                     {
-                                    <a class="btn btn-outline-dark" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">buy</a>
+                                        <a class="btn btn-outline-dark me-2" asp-action="Details" asp-route-id="@item.Id">Buy</a>
                                     }
                                     else
                                     {
-                                        <button class="btn btn-outline-dark" disabled>not enough in stock</button>
+                                        <button class="btn btn-outline-dark me-2" disabled>Not enough in stock</button>
                                     }
-
+                                }
                             }
-                           
-                            
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
-        </div>
+        
     }
 </div>
 

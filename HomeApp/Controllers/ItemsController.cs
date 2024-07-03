@@ -224,7 +224,8 @@ namespace HomeApp.Controllers
                 CategoriesList = new MultiSelectList(categories, "Id", "CatgoryName"),
                 SuppliersList = new SelectList(suppliers, "Id", "Name"),
                 SelectedCategories = item.CategoryItems.Select(uf => uf.CategoryId).ToList(),
-                SelectedSupplierId = item.SupplierId
+                SelectedSupplierId = item.SupplierId,
+                
             };
 
             return View(viewModel);
@@ -259,8 +260,7 @@ namespace HomeApp.Controllers
 
                         viewModel.Item.PictureJPG = "/uploads/" + uniqueFrontPageFileName;
                     }
-
-                    if (viewModel.FrontPageFile == null)
+                    else
                     {
                         var existingItem = await _context.Item.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
                         if (existingItem != null)
@@ -270,6 +270,7 @@ namespace HomeApp.Controllers
                     }
 
                     viewModel.Item.SupplierId = viewModel.SelectedSupplierId;
+                    
 
                     _context.Update(viewModel.Item);
                     await _context.SaveChangesAsync();
@@ -301,6 +302,7 @@ namespace HomeApp.Controllers
 
             return View(viewModel);
         }
+
 
 
         // GET: Items/Delete/5
